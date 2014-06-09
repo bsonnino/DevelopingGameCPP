@@ -99,9 +99,15 @@
     <MeshContentTask Include="Assets\gamelevel.fbx">
       <Filter>Assets</Filter>
     </MeshContentTask>
+    <MeshContentTask Include="field.fbx">
+      <Filter>Assets</Filter>
+    </MeshContentTask>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\SoccerBall.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Soccer-Field.jpg">
       <Filter>Assets</Filter>
     </Image>
   </ItemGroup>

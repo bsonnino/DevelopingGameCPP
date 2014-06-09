@@ -49,7 +49,18 @@ void Game::CreateDeviceDependentResources()
 		L"gamelevel.cmo",
 		L"",
 		L"",
-		m_meshModels);
+		m_meshModels)
+		.then([this]()
+	{
+		return Mesh::LoadFromFileAsync(
+			m_graphics,
+			L"field.cmo",
+			L"",
+			L"",
+			m_meshModels,
+			false  // Do not clear the vector of meshes
+			);
+	});
 
 	(loadMeshTask).then([this]()
 	{
@@ -156,7 +167,10 @@ void Game::Render()
 
 		m_graphics.UpdateMiscConstants(m_miscConstants);
 
-		m_meshModels[i]->Render(m_graphics, modelTransform);
+		if (String::CompareOrdinal(meshName, L"Sphere_Node") == 0)
+			m_meshModels[i]->Render(m_graphics, modelTransform);
+		else
+			m_meshModels[i]->Render(m_graphics, XMMatrixIdentity());
 	}
 }
 
