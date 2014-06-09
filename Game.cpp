@@ -60,6 +60,16 @@ void Game::CreateDeviceDependentResources()
 			m_meshModels,
 			false  // Do not clear the vector of meshes
 			);
+	}).then([this]()
+	{
+		return Mesh::LoadFromFileAsync(
+			m_graphics,
+			L"soccer_goal.cmo",
+			L"",
+			L"",
+			m_meshModels,
+			false  // Do not clear the vector of meshes
+			);
 	});
 
 	(loadMeshTask).then([this]()
@@ -81,12 +91,11 @@ void Game::CreateWindowSizeDependentResources()
 	Size outputSize = m_deviceResources->GetOutputSize();
 
 	// Setup the camera parameters for our scene.
-	m_graphics.GetCamera().SetViewport((UINT)outputSize.Width, (UINT)outputSize.Height);
-	m_graphics.GetCamera().SetPosition(XMFLOAT3(0.0f, 6.0f, -18.0f));
-	m_graphics.GetCamera().SetLookAt(XMFLOAT3(0.0f, 0.0f, 0.0f));
-
+	m_graphics.GetCamera().SetViewport((UINT) outputSize.Width, (UINT) outputSize.Height);
+	m_graphics.GetCamera().SetPosition(XMFLOAT3(25.0f, 10.0f, 0.0f));
+	m_graphics.GetCamera().SetLookAt(XMFLOAT3(100.0f, 0.0f, 0.0f));
 	float aspectRatio = outputSize.Width / outputSize.Height;
-	float fovAngleY = 70.0f * XM_PI / 180.0f;
+	float fovAngleY = 30.0f * XM_PI / 180.0f;
 
 	if (aspectRatio < 1.0f)
 	{
@@ -99,8 +108,8 @@ void Game::CreateWindowSizeDependentResources()
 		// Landscape view.
 		m_graphics.GetCamera().SetUpVector(XMFLOAT3(0.0f, 1.0f, 0.0f));
 	}
-
-	m_graphics.GetCamera().SetProjection(fovAngleY, aspectRatio, 1.0f, 1000.0f);
+	
+	m_graphics.GetCamera().SetProjection(fovAngleY, aspectRatio, 1.0f, 100.0f);
 
 	// Setup lighting for our scene.
 	static const XMVECTORF32 s_vPos = { 5.0f, 5.0f, -2.5f, 0.f };
@@ -158,7 +167,9 @@ void Game::Render()
 
 	// Draw our scene models.
 	XMMATRIX rotation = XMMatrixRotationY(m_rotation);
-	rotation *= XMMatrixTranslation(0, m_translation, 0);
+	rotation *= XMMatrixTranslation(63.0, m_translation, 0);
+	auto goalTransform = XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixRotationY(-XM_PIDIV2)* XMMatrixTranslation(85.5f, -0.5, 0);
+
 	for (UINT i = 0; i < m_meshModels.size(); i++)
 	{
 		XMMATRIX modelTransform = rotation;
@@ -169,8 +180,10 @@ void Game::Render()
 
 		if (String::CompareOrdinal(meshName, L"Sphere_Node") == 0)
 			m_meshModels[i]->Render(m_graphics, modelTransform);
-		else
+		else if (String::CompareOrdinal(meshName, L"Plane_Node") == 0)
 			m_meshModels[i]->Render(m_graphics, XMMatrixIdentity());
+		else
+			m_meshModels[i]->Render(m_graphics, goalTransform);
 	}
 }
 

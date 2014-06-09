@@ -189,6 +189,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Image Include="Assets\Logo.png" />
+    <Image Include="Assets\originalfinmasket.png" />
     <Image Include="Assets\SmallLogo.png" />
     <Image Include="Assets\Soccer-Field.jpg" />
     <Image Include="Assets\SoccerBall.png" />
@@ -279,6 +280,7 @@
   </ItemGroup>
   <ItemGroup>
     <MeshContentTask Include="Assets\gamelevel.fbx" />
+    <MeshContentTask Include="Assets\soccer_goal.fbx" />
     <MeshContentTask Include="field.fbx" />
   </ItemGroup>
   <ItemGroup>
