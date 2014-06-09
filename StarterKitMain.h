@@ -23,6 +23,10 @@ namespace StarterKit
 
 		// Public methods passed straight to the Game renderer.
 		Platform::String^ OnHitObject(int x, int y) { return m_sceneRenderer->OnHitObject(x, y); }
+		void OnKeyDown(Windows::System::VirtualKey key) {
+			m_sceneRenderer->OnKeyDown(key);
+		}
+
 		void ToggleHitEffect(Platform::String^ object) { m_sceneRenderer->ToggleHitEffect(object); }
 		void ChangeMaterialColor(Platform::String^ object, float r, float g, float b) { m_sceneRenderer->ChangeMaterialColor(object, r, g, b); }
 

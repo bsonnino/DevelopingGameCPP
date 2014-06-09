@@ -118,7 +118,7 @@ void Game::CreateWindowSizeDependentResources()
 		// Landscape view.
 		m_graphics.GetCamera().SetUpVector(XMFLOAT3(0.0f, 1.0f, 0.0f));
 	}
-	
+
 	m_graphics.GetCamera().SetProjection(fovAngleY, aspectRatio, 1.0f, 100.0f);
 
 	// Setup lighting for our scene.
@@ -181,7 +181,7 @@ void Game::Render()
 	XMMATRIX rotation = XMMatrixRotationY(m_rotation);
 	rotation *= XMMatrixTranslation(m_translationX, m_translationY, m_translationZ);
 	auto goalTransform = XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixRotationY(-XM_PIDIV2)* XMMatrixTranslation(85.5f, -0.5, 0);
-	auto goalkeeperTransform = XMMatrixTranslation(85.65f, 1.4f, 0);
+	auto goalkeeperTransform = XMMatrixTranslation(85.65f, 1.4f, m_goalkeeperPosition);
 
 	for (UINT i = 0; i < m_meshModels.size(); i++)
 	{
@@ -255,3 +255,16 @@ String^ Game::OnHitObject(int x, int y)
 
 	return result;
 }
+
+void Game::OnKeyDown(Windows::System::VirtualKey key)
+{
+	const float MaxGoalkeeperPosition = 6.0;
+	const float MinGoalkeeperPosition = -6.0;
+	if (key == Windows::System::VirtualKey::Right)
+		m_goalkeeperPosition = m_goalkeeperPosition >= MaxGoalkeeperPosition ?
+	m_goalkeeperPosition : m_goalkeeperPosition + 0.1f;
+	else if (key == Windows::System::VirtualKey::Left)
+		m_goalkeeperPosition = m_goalkeeperPosition <= MinGoalkeeperPosition ?
+	m_goalkeeperPosition : m_goalkeeperPosition - 0.1f;
+}
+

@@ -27,6 +27,7 @@ namespace StarterKit
 		void ReleaseDeviceDependentResources();
 		void Update(DX::StepTimer const& timer);
 		void Render();
+		void OnKeyDown(Windows::System::VirtualKey key);
 
 		// Methods used to manipulate the objects in the scene.
 		Platform::String^ OnHitObject(int x, int y);
@@ -41,6 +42,7 @@ namespace StarterKit
 		std::vector<float> m_time;
 		float m_rotation;
 		float m_translationX, m_translationY, m_translationZ;
+		float m_goalkeeperPosition;
 
 		// Members used to keep track of the graphics state.
 		VSD3DStarter::Graphics m_graphics;

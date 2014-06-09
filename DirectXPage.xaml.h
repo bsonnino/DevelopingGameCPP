@@ -69,6 +69,7 @@ namespace StarterKit
 		std::shared_ptr<DX::DeviceResources> m_deviceResources;
 		std::unique_ptr<StarterKitMain> m_main; 
 		bool m_windowVisible;
+		void OnKeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e);
 	};
 }
 
