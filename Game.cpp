@@ -165,6 +165,7 @@ void Game::Update(DX::StepTimer const& timer)
 		m_startTime = static_cast<float>(timer.GetTotalSeconds());
 		m_isAnimating = true;
 		m_isKick = false;
+		m_isGoal = m_isCaught = false;
 		m_ballAngle = (static_cast <float> (rand()) /
 			static_cast <float> (RAND_MAX) -0.5f) * 6.0f;
 	}
@@ -172,9 +173,31 @@ void Game::Update(DX::StepTimer const& timer)
 	{
 		auto totalTime = static_cast<float>(timer.GetTotalSeconds()) - m_startTime;
 		m_rotation = totalTime * 0.5f;
-		m_translationX = 63.0f + 11.5f * totalTime;
-		m_translationY = 11.5f * totalTime - 5.0f * totalTime*totalTime;
-		m_translationZ = m_ballAngle * totalTime;
+		if (!m_isCaught)
+		{
+			// ball traveling
+			m_translationX = 63.0f + 11.5f * totalTime;
+			m_translationY = 11.5f * totalTime - 5.0f * totalTime*totalTime;
+			m_translationZ = m_ballAngle * totalTime;
+		}
+		else
+		{
+			// if ball is caught, position it in the center of the goalkeeper
+			m_translationX = 83.35f;
+			m_translationY = 1.8f;
+			m_translationZ = m_goalkeeperPosition;
+		}
+		if (!m_isGoal && !m_isCaught && m_translationX >= 85.5f)
+		{
+			// ball passed the goal line - goal or caught
+			auto ballMin = m_translationZ - 0.5f + 7.0f;
+			auto ballMax = m_translationZ + 0.5f + 7.0f;
+			auto goalkeeperMin = m_goalkeeperPosition - 1.0f + 7.0f;
+			auto goalkeeperMax = m_goalkeeperPosition + 1.0f + 7.0f;
+			m_isGoal = (goalkeeperMax < ballMin || goalkeeperMin > ballMax);
+			m_isCaught = !m_isGoal;
+		}
+
 		if (totalTime > 2.3f)
 			ResetGame();
 	}

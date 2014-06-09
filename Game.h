@@ -45,6 +45,7 @@ namespace StarterKit
 		float m_goalkeeperPosition;
 		bool m_isAnimating;
 		bool m_isKick;
+		bool m_isGoal, m_isCaught;
 		float m_startTime;
 		float m_ballAngle;
 
