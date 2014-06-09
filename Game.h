@@ -15,6 +15,7 @@
 
 #include "..\Common\DeviceResources.h"
 #include "..\Common\StepTimer.h"
+#include "ViewModel.h"
 
 namespace StarterKit
 {
@@ -33,6 +34,7 @@ namespace StarterKit
 		Platform::String^ OnHitObject(int x, int y);
 		void ToggleHitEffect(Platform::String^ object);
 		void ChangeMaterialColor(Platform::String^ object, float r, float g, float b);
+		StarterKit::ViewModel^ GetViewModel();
 
 	private:
 		// Members used to keep track of the scene state.
@@ -48,6 +50,7 @@ namespace StarterKit
 		bool m_isGoal, m_isCaught;
 		float m_startTime;
 		float m_ballAngle;
+		StarterKit::ViewModel^ m_viewModel;
 
 		// Members used to keep track of the graphics state.
 		VSD3DStarter::Graphics m_graphics;

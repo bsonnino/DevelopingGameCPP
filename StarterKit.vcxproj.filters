@@ -60,6 +60,7 @@
     <ClCompile Include="DirectXTex\DDSTextureLoader.cpp">
       <Filter>DirectXTex</Filter>
     </ClCompile>
+    <ClCompile Include="ViewModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.xaml.h" />
@@ -76,6 +77,7 @@
     <ClInclude Include="DirectXTex\DDSTextureLoader.h">
       <Filter>DirectXTex</Filter>
     </ClInclude>
+    <ClInclude Include="ViewModel.h" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />

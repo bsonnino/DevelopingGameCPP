@@ -18,38 +18,14 @@
         </Style>
     </Page.Resources>
 
-    <SwapChainPanel x:Name="swapChainPanel" Tapped="OnTapped">
-        <Border VerticalAlignment="Top" HorizontalAlignment="Center" Padding="10" Background="Black">
+    <SwapChainPanel x:Name="swapChainPanel" Tapped="OnTapped" >
+        <Border VerticalAlignment="Top" HorizontalAlignment="Center" Padding="10" Background="Black" 
+          Opacity="0.7">
             <StackPanel Orientation="Horizontal" >
-                <TextBlock x:Name="HitCountCube" Text="0" Style="{StaticResource HudCounter}"/>
-                <TextBlock x:Name="HitCountSphere" Text="0" Style="{StaticResource HudCounter}"/>
-
-                <TextBlock x:Name="HitCountTeapot" Text="0" Style="{StaticResource HudCounter}" Margin="5" FontSize="55"/>
-
-                <TextBlock x:Name="HitCountCone" Text="0" Style="{StaticResource HudCounter}"/>
-                <TextBlock x:Name="HitCountCylinder" Text="0" Style="{StaticResource HudCounter}"/>
+                <TextBlock x:Name="ScoreUser" Text="0" Style="{StaticResource HudCounter}"/>
+                <TextBlock Text="x" Style="{StaticResource HudCounter}"/>
+                <TextBlock x:Name="ScoreMachine" Text="0" Style="{StaticResource HudCounter}"/>
             </StackPanel>
         </Border>
     </SwapChainPanel>
-
-    <Page.BottomAppBar>
-        <AppBar Padding="10,0,10,0">
-            <Grid>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <AppBarButton Label="Previous Color"
-                                  AutomationProperties.Name="Previous Color"
-                                  AutomationProperties.AutomationId="PreviousAppBarButton"
-                                  Icon="Previous"
-                                  Click="OnPreviousColorPressed"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <AppBarButton Label="Next Color"
-                                  AutomationProperties.Name="Next Color"
-                                  AutomationProperties.AutomationId="NextAppBarButton"
-                                  Icon="Next"
-                                  Click="OnNextColorPressed"/>
-                </StackPanel>
-            </Grid>
-        </AppBar>
-    </Page.BottomAppBar>
 </Page>

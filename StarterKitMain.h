@@ -38,6 +38,7 @@ namespace StarterKit
 		// IDeviceNotify
 		virtual void OnDeviceLost();
 		virtual void OnDeviceRestored();
+		StarterKit::ViewModel^ GetViewModel() { return m_sceneRenderer->GetViewModel(); }
 
 	private:
 		void Update();

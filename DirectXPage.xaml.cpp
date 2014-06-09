@@ -80,6 +80,8 @@ DirectXPage::DirectXPage():
 	m_deviceResources->SetSwapChainPanel(swapChainPanel);
 
 	m_main = std::unique_ptr<StarterKitMain>(new StarterKitMain(m_deviceResources));
+	m_main->GetViewModel()->PropertyChanged += ref new
+		TypedEventHandler<Object ^, String ^>(this, &DirectXPage::OnPropertyChanged);
 	m_main->StartRenderLoop();
 }
 
@@ -87,27 +89,6 @@ DirectXPage::~DirectXPage()
 {
 	// Stop rendering and processing events on destruction.
 	m_main->StopRenderLoop();
-}
-
-// Called when the Previous Color app bar button is pressed.
-void DirectXPage::OnPreviousColorPressed(Object^ sender, RoutedEventArgs^ e)
-{
-	m_colorIndex--;
-	if (m_colorIndex <= 0)
-	{
-		m_colorIndex = m_colors.size() - 1;
-	}
-	ChangeObjectColor(L"Teapot_Node", m_colorIndex);
-}
-
-// Called when the Next Color app bar button is pressed.
-void DirectXPage::OnNextColorPressed(Object^ sender, RoutedEventArgs^ e)
-{
-	m_colorIndex++;
-	if (m_colorIndex >= m_colors.size())
-		m_colorIndex = 0;
-
-	ChangeObjectColor(L"Teapot_Node", m_colorIndex);
 }
 
 // Saves the current state of the app for suspend and terminate events.
@@ -134,40 +115,7 @@ void DirectXPage::LoadInternalState(IPropertySet^ state)
 // Called when the SwapChainPanel is tapped.
 void DirectXPage::OnTapped(Object^ sender, TappedRoutedEventArgs^ e)
 {
-	auto currentPoint = e->GetPosition(nullptr);
-	String^ objName = m_main->OnHitObject((int)currentPoint.X, (int)currentPoint.Y);
-	if (objName != nullptr)
-	{
-		m_main->ToggleHitEffect(objName);
-
-		if (objName->Equals(L"Cylinder_Node"))
-		{
-			this->HitCountCylinder->Text = (++m_hitCountCylinder).ToString();
-		}
-		else if (objName->Equals(L"Cube_Node"))
-		{
-			this->HitCountCube->Text = (++m_hitCountCube).ToString();
-		}
-		else if (objName->Equals(L"Sphere_Node"))
-		{
-			this->HitCountSphere->Text = (++m_hitCountSphere).ToString();
-		}
-		else if (objName->Equals(L"Cone_Node"))
-		{
-			this->HitCountCone->Text = (++m_hitCountCone).ToString();
-		}
-		else if (objName->Equals(L"Teapot_Node"))
-		{
-			this->HitCountTeapot->Text = (++m_hitCountTeapot).ToString();
-		}
-	}
-}
-
-// Helper method to change an object's color.
-void DirectXPage::ChangeObjectColor(String^ objectName, int colorIndex)
-{
-	auto color = m_colors[colorIndex];
-	m_main->ChangeMaterialColor(objectName, color.R / 255.0f, color.G / 255.0f, color.B / 255.0f);
+	
 }
 
 // Window event handlers.
@@ -226,3 +174,26 @@ void StarterKit::DirectXPage::OnKeyDown(Platform::Object^ sender, Windows::UI::X
 {
 	m_main->OnKeyDown(e->Key);
 }
+
+void StarterKit::DirectXPage::OnPropertyChanged(Platform::Object ^sender, Platform::String ^propertyName)
+{
+
+	if (propertyName == "ScoreUser")
+	{
+		auto scoreUser = m_main->GetViewModel()->ScoreUser;
+		Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this, scoreUser]()
+		{
+			ScoreUser->Text = scoreUser.ToString();
+		}));
+	}
+	if (propertyName == "ScoreMachine")
+	{
+		auto scoreMachine = m_main->GetViewModel()->ScoreMachine;
+		Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this, scoreMachine]()
+		{
+			ScoreMachine->Text = scoreMachine.ToString();
+		}));
+	}
+
+}
+

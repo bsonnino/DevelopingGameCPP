@@ -23,10 +23,7 @@ namespace StarterKit
 		DirectXPage();
 		virtual ~DirectXPage();
 
-		// Event handlers for the app bar buttons.
-		void OnPreviousColorPressed(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void OnNextColorPressed(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-
+		void OnPropertyChanged(Platform::Object ^sender, Platform::String ^propertyName);
 		void SaveInternalState(Windows::Foundation::Collections::IPropertySet^ state);
 		void LoadInternalState(Windows::Foundation::Collections::IPropertySet^ state);
 

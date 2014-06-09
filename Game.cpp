@@ -27,6 +27,7 @@ m_deviceResources(deviceResources)
 {
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
+	m_viewModel = ref new ViewModel();
 }
 
 // Loads meshes and other resources that depend on the device, but not on window size.
@@ -151,8 +152,18 @@ void Game::ReleaseDeviceDependentResources()
 	m_loadingComplete = false;
 }
 
+StarterKit::ViewModel^ Game::GetViewModel()
+{
+	return m_viewModel;
+}
+
 void Game::ResetGame()
 {
+	if (m_isCaught)
+		m_viewModel->ScoreUser++;
+	if (m_isGoal)
+		m_viewModel->ScoreMachine++;
+
 	m_isAnimating = false;
 	m_goalkeeperPosition = 0;
 }
