@@ -43,6 +43,10 @@ namespace StarterKit
 		float m_rotation;
 		float m_translationX, m_translationY, m_translationZ;
 		float m_goalkeeperPosition;
+		bool m_isAnimating;
+		bool m_isKick;
+		float m_startTime;
+		float m_ballAngle;
 
 		// Members used to keep track of the graphics state.
 		VSD3DStarter::Graphics m_graphics;
@@ -54,5 +58,6 @@ namespace StarterKit
 
 		// Variables used with the rendering loop.
 		bool m_loadingComplete;
+		void ResetGame();
 	};
 }

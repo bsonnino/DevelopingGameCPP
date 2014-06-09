@@ -7,6 +7,7 @@
 
 #include "pch.h"
 #include "Game.h"
+#include <ctime>
 
 #include "..\Common\DirectXHelper.h"
 #include "HitTestingHelpers.h"
@@ -31,6 +32,7 @@ m_deviceResources(deviceResources)
 // Loads meshes and other resources that depend on the device, but not on window size.
 void Game::CreateDeviceDependentResources()
 {
+	srand(static_cast <unsigned int> (time(0)));
 	m_graphics.Initialize(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext(), m_deviceResources->GetDeviceFeatureLevel());
 
 	// Set DirectX to not cull any triangles so the entire mesh will always be shown.
@@ -149,15 +151,33 @@ void Game::ReleaseDeviceDependentResources()
 	m_loadingComplete = false;
 }
 
+void Game::ResetGame()
+{
+	m_isAnimating = false;
+	m_goalkeeperPosition = 0;
+}
+
 // Called once per frame, updates the scene state.
 void Game::Update(DX::StepTimer const& timer)
 {
-	// Rotate scene.
-	m_rotation = static_cast<float>(timer.GetTotalSeconds()) * 0.5f;
-	auto totalTime = (float) fmod(timer.GetTotalSeconds(), 2.3f);
-	m_translationX = 63.0f + 11.5f * totalTime;
-	m_translationY = 11.5f * totalTime - 5 * totalTime*totalTime;
-	m_translationZ = 3 * totalTime;
+	if (m_isKick)
+	{
+		m_startTime = static_cast<float>(timer.GetTotalSeconds());
+		m_isAnimating = true;
+		m_isKick = false;
+		m_ballAngle = (static_cast <float> (rand()) /
+			static_cast <float> (RAND_MAX) -0.5f) * 6.0f;
+	}
+	if (m_isAnimating)
+	{
+		auto totalTime = static_cast<float>(timer.GetTotalSeconds()) - m_startTime;
+		m_rotation = totalTime * 0.5f;
+		m_translationX = 63.0f + 11.5f * totalTime;
+		m_translationY = 11.5f * totalTime - 5.0f * totalTime*totalTime;
+		m_translationZ = m_ballAngle * totalTime;
+		if (totalTime > 2.3f)
+			ResetGame();
+	}
 }
 
 // Renders one frame using the Starter Kit helpers.
@@ -178,15 +198,21 @@ void Game::Render()
 	context->OMSetRenderTargets(1, targets, dsv);
 
 	// Draw our scene models.
-	XMMATRIX rotation = XMMatrixRotationY(m_rotation);
-	rotation *= XMMatrixTranslation(m_translationX, m_translationY, m_translationZ);
+	XMMATRIX modelTransform;
+	if (m_isAnimating)
+	{
+		modelTransform = XMMatrixRotationY(m_rotation);
+		modelTransform *= XMMatrixTranslation(m_translationX,
+			m_translationY, m_translationZ);
+	}
+	else
+		modelTransform = XMMatrixTranslation(63.0f, 0.0f, 0.0f);
+
 	auto goalTransform = XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixRotationY(-XM_PIDIV2)* XMMatrixTranslation(85.5f, -0.5, 0);
 	auto goalkeeperTransform = XMMatrixTranslation(85.65f, 1.4f, m_goalkeeperPosition);
 
 	for (UINT i = 0; i < m_meshModels.size(); i++)
 	{
-		XMMATRIX modelTransform = rotation;
-
 		String^ meshName = ref new String(m_meshModels[i]->Name());
 
 		m_graphics.UpdateMiscConstants(m_miscConstants);
@@ -258,13 +284,18 @@ String^ Game::OnHitObject(int x, int y)
 
 void Game::OnKeyDown(Windows::System::VirtualKey key)
 {
-	const float MaxGoalkeeperPosition = 6.0;
-	const float MinGoalkeeperPosition = -6.0;
-	if (key == Windows::System::VirtualKey::Right)
-		m_goalkeeperPosition = m_goalkeeperPosition >= MaxGoalkeeperPosition ?
-	m_goalkeeperPosition : m_goalkeeperPosition + 0.1f;
-	else if (key == Windows::System::VirtualKey::Left)
-		m_goalkeeperPosition = m_goalkeeperPosition <= MinGoalkeeperPosition ?
-	m_goalkeeperPosition : m_goalkeeperPosition - 0.1f;
+	const float MaxGoalkeeperPosition = 6.0f;
+	
+	if (m_isAnimating)
+	{
+		auto goalKeeperVelocity = key == Windows::System::VirtualKey::Right ?
+			0.1f : -0.1f;
+
+		m_goalkeeperPosition = fabs(m_goalkeeperPosition) >= MaxGoalkeeperPosition ?
+		m_goalkeeperPosition :
+							 m_goalkeeperPosition + goalKeeperVelocity;
+	}
+	else if (key == Windows::System::VirtualKey::Space)
+		m_isKick = true;
 }
 
