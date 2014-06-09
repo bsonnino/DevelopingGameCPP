@@ -70,6 +70,16 @@ void Game::CreateDeviceDependentResources()
 			m_meshModels,
 			false  // Do not clear the vector of meshes
 			);
+	}).then([this]()
+	{
+		return Mesh::LoadFromFileAsync(
+			m_graphics,
+			L"goalkeeper.cmo",
+			L"",
+			L"",
+			m_meshModels,
+			false  // Do not clear the vector of meshes
+			);
 	});
 
 	(loadMeshTask).then([this]()
@@ -145,8 +155,8 @@ void Game::Update(DX::StepTimer const& timer)
 	// Rotate scene.
 	m_rotation = static_cast<float>(timer.GetTotalSeconds()) * 0.5f;
 	auto totalTime = (float) fmod(timer.GetTotalSeconds(), 2.3f);
-	m_translationX = 63.0 + 11.5 * totalTime;
-	m_translationY = 11.5 * totalTime - 5 * totalTime*totalTime;
+	m_translationX = 63.0f + 11.5f * totalTime;
+	m_translationY = 11.5f * totalTime - 5 * totalTime*totalTime;
 	m_translationZ = 3 * totalTime;
 }
 
@@ -171,6 +181,7 @@ void Game::Render()
 	XMMATRIX rotation = XMMatrixRotationY(m_rotation);
 	rotation *= XMMatrixTranslation(m_translationX, m_translationY, m_translationZ);
 	auto goalTransform = XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixRotationY(-XM_PIDIV2)* XMMatrixTranslation(85.5f, -0.5, 0);
+	auto goalkeeperTransform = XMMatrixTranslation(85.65f, 1.4f, 0);
 
 	for (UINT i = 0; i < m_meshModels.size(); i++)
 	{
@@ -184,9 +195,12 @@ void Game::Render()
 			m_meshModels[i]->Render(m_graphics, modelTransform);
 		else if (String::CompareOrdinal(meshName, L"Plane_Node") == 0)
 			m_meshModels[i]->Render(m_graphics, XMMatrixIdentity());
+		else if (String::CompareOrdinal(meshName, L"Cube_Node") == 0)
+			m_meshModels[i]->Render(m_graphics, goalkeeperTransform);
 		else
 			m_meshModels[i]->Render(m_graphics, goalTransform);
 	}
+
 }
 
 // Starts the glow animation for an object.

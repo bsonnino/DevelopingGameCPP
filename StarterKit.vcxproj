@@ -282,6 +282,7 @@
     <MeshContentTask Include="Assets\gamelevel.fbx" />
     <MeshContentTask Include="Assets\soccer_goal.fbx" />
     <MeshContentTask Include="field.fbx" />
+    <MeshContentTask Include="goalkeeper.fbx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\GlowEffect.dgsl">

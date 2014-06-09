@@ -105,6 +105,9 @@
     <MeshContentTask Include="Assets\soccer_goal.fbx">
       <Filter>Assets</Filter>
     </MeshContentTask>
+    <MeshContentTask Include="goalkeeper.fbx">
+      <Filter>Assets</Filter>
+    </MeshContentTask>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\SoccerBall.png">
