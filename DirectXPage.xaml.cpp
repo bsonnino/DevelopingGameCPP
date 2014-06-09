@@ -6,7 +6,7 @@
 #include "pch.h"
 #include "DirectXPage.xaml.h"
 #include "StarterKitMain.h"
-
+ 
 using namespace StarterKit;
 
 using namespace Platform;
@@ -115,7 +115,7 @@ void DirectXPage::LoadInternalState(IPropertySet^ state)
 // Called when the SwapChainPanel is tapped.
 void DirectXPage::OnTapped(Object^ sender, TappedRoutedEventArgs^ e)
 {
-	
+	m_main->OnKeyDown(Windows::System::VirtualKey::Space);
 }
 
 // Window event handlers.

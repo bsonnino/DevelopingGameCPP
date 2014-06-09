@@ -34,6 +34,15 @@ m_deviceResources(deviceResources)
 void Game::CreateDeviceDependentResources()
 {
 	srand(static_cast <unsigned int> (time(0)));
+	m_inclinometer = Windows::Devices::Sensors::Inclinometer::GetDefault();
+	if (m_inclinometer != nullptr)
+	{
+		// Establish the report interval for all scenarios
+		uint32 minReportInterval = m_inclinometer->MinimumReportInterval;
+		uint32 reportInterval = minReportInterval > 16 ? minReportInterval : 16;
+		m_inclinometer->ReportInterval = reportInterval;
+	}
+
 	m_graphics.Initialize(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext(), m_deviceResources->GetDeviceFeatureLevel());
 
 	// Set DirectX to not cull any triangles so the entire mesh will always be shown.
@@ -209,8 +218,26 @@ void Game::Update(DX::StepTimer const& timer)
 			m_isCaught = !m_isGoal;
 		}
 
+		SetGoalkeeperPosition();
 		if (totalTime > 2.3f)
 			ResetGame();
+	}
+}
+
+void StarterKit::Game::SetGoalkeeperPosition()
+{
+
+	if (m_isAnimating && m_inclinometer != nullptr)
+	{
+		Windows::Devices::Sensors::InclinometerReading^ reading =
+			m_inclinometer->GetCurrentReading();
+		auto goalkeeperVelocity = reading->RollDegrees / 100.0f;
+		if (goalkeeperVelocity > 0.3f)
+			goalkeeperVelocity = 0.3f;
+		if (goalkeeperVelocity < -0.3f)
+			goalkeeperVelocity = -0.3f;
+		m_goalkeeperPosition = fabs(m_goalkeeperPosition) >= 6.0f ?
+		m_goalkeeperPosition : m_goalkeeperPosition + goalkeeperVelocity;
 	}
 }
 

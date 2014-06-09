@@ -51,6 +51,7 @@ namespace StarterKit
 		float m_startTime;
 		float m_ballAngle;
 		StarterKit::ViewModel^ m_viewModel;
+		Windows::Devices::Sensors::Inclinometer^ m_inclinometer;
 
 		// Members used to keep track of the graphics state.
 		VSD3DStarter::Graphics m_graphics;
@@ -63,5 +64,6 @@ namespace StarterKit
 		// Variables used with the rendering loop.
 		bool m_loadingComplete;
 		void ResetGame();
+		void SetGoalkeeperPosition();
 	};
 }
