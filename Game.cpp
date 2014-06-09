@@ -144,8 +144,10 @@ void Game::Update(DX::StepTimer const& timer)
 {
 	// Rotate scene.
 	m_rotation = static_cast<float>(timer.GetTotalSeconds()) * 0.5f;
-	auto totalTime = (float) fmod(timer.GetTotalSeconds(), 2.0f);
-	m_translation = 10 * totalTime - 5 * totalTime*totalTime;
+	auto totalTime = (float) fmod(timer.GetTotalSeconds(), 2.3f);
+	m_translationX = 63.0 + 11.5 * totalTime;
+	m_translationY = 11.5 * totalTime - 5 * totalTime*totalTime;
+	m_translationZ = 3 * totalTime;
 }
 
 // Renders one frame using the Starter Kit helpers.
@@ -167,7 +169,7 @@ void Game::Render()
 
 	// Draw our scene models.
 	XMMATRIX rotation = XMMatrixRotationY(m_rotation);
-	rotation *= XMMatrixTranslation(63.0, m_translation, 0);
+	rotation *= XMMatrixTranslation(m_translationX, m_translationY, m_translationZ);
 	auto goalTransform = XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixRotationY(-XM_PIDIV2)* XMMatrixTranslation(85.5f, -0.5, 0);
 
 	for (UINT i = 0; i < m_meshModels.size(); i++)
