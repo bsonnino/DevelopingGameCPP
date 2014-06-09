@@ -40,6 +40,7 @@ namespace StarterKit
 		DirectX::XMFLOAT4X4 m_teapotTransform;
 		std::vector<float> m_time;
 		float m_rotation;
+		float m_translation;
 
 		// Members used to keep track of the graphics state.
 		VSD3DStarter::Graphics m_graphics;
