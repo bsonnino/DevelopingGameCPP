@@ -49,46 +49,9 @@ void Game::CreateDeviceDependentResources()
 		L"gamelevel.cmo",
 		L"",
 		L"",
-		m_meshModels)
-		.then([this]()
-	{
-		// Load the teapot from a separate file and add it to the vector of meshes.
-		return Mesh::LoadFromFileAsync(
-			m_graphics,
-			L"teapot.cmo",
-			L"",
-			L"",
-			m_meshModels,
-			false  // Do not clear the vector of meshes
-			);
-	})
-		.then([this]()
-	{
-		// Initialize animated models.
-		for (Mesh* m : m_meshModels)
-		{
-			if (m->BoneInfoCollection().empty() == false)
-			{
-				auto animState = new AnimationState();
-				animState->m_boneWorldTransforms.resize(m->BoneInfoCollection().size());
+		m_meshModels);
 
-				m->Tag = animState;
-			}
-		}
-		// Create a scaling transformation for the teapot model.
-		XMStoreFloat4x4(&m_teapotTransform, XMMatrixScaling(0.044f, 0.044f, 0.044f) * XMMatrixTranslation(0.0f, -1.6f, 0.0f));
-
-		// Each mesh object has its own "time" used to control the glow effect.
-		m_time.clear();
-		for (size_t i = 0; i < m_meshModels.size(); i++)
-		{
-			m_time.push_back(0.0f);
-		}
-	});
-
-	auto initializeSkinnedMeshRendererTask = m_skinnedMeshRenderer.InitializeAsync(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext());
-
-	(loadMeshTask && initializeSkinnedMeshRendererTask).then([this]()
+	(loadMeshTask).then([this]()
 	{
 		// Scene is ready to be rendered.
 		m_loadingComplete = true;
@@ -149,15 +112,6 @@ void Game::ReleaseDeviceDependentResources()
 {
 	for (Mesh* m : m_meshModels)
 	{
-		if (m != nullptr)
-		{
-			AnimationState* animState = (AnimationState*)m->Tag;
-			if (animState != nullptr)
-			{
-				m->Tag = nullptr;
-				delete animState;
-			}
-		}
 		delete m;
 	}
 	m_meshModels.clear();
@@ -168,19 +122,8 @@ void Game::ReleaseDeviceDependentResources()
 // Called once per frame, updates the scene state.
 void Game::Update(DX::StepTimer const& timer)
 {
-	auto timeDelta = static_cast<float>(timer.GetElapsedSeconds());
-
-	// Update animated models.
-	m_skinnedMeshRenderer.UpdateAnimation(timeDelta, m_meshModels);
-
 	// Rotate scene.
 	m_rotation = static_cast<float>(timer.GetTotalSeconds()) * 0.5f;
-
-	// Update the "time" variable for the glow effect.
-	for (float &time : m_time)
-	{
-		time = std::max<float>(0.0f, time - timeDelta);
-	}
 }
 
 // Renders one frame using the Starter Kit helpers.
@@ -207,42 +150,16 @@ void Game::Render()
 		XMMATRIX modelTransform = rotation;
 
 		String^ meshName = ref new String(m_meshModels[i]->Name());
-		if (String::CompareOrdinal(meshName, L"Teapot_Node") == 0)
-		{
-			modelTransform = XMLoadFloat4x4(&m_teapotTransform) * modelTransform;
-		}
 
-		// Update the time shader variable for the objects in our scene.
-		m_miscConstants.Time = m_time[i];
 		m_graphics.UpdateMiscConstants(m_miscConstants);
 
-		// Draw the models.
-		if (m_meshModels[i]->Tag != nullptr)
-		{
-			// Mesh has animation - render skinned mesh.
-			m_skinnedMeshRenderer.RenderSkinnedMesh(m_meshModels[i], m_graphics, modelTransform);
-		}
-		else
-		{
-			// Mesh does not have animation - render as usual.
-			m_meshModels[i]->Render(m_graphics, modelTransform);
-		}
+		m_meshModels[i]->Render(m_graphics, modelTransform);
 	}
 }
 
 // Starts the glow animation for an object.
 void Game::ToggleHitEffect(String^ object)
 {
-	for (UINT i = 0; i < m_meshModels.size(); i++)
-	{
-		Mesh* m = m_meshModels[i];
-		String^ meshName = ref new String(m->Name());
-		if (String::CompareOrdinal(object, meshName) == 0)
-		{
-			m_time[i] = 1.0f;
-			break;
-		}
-	}
 }
 
 // Changes an object's diffuse material color.
@@ -275,20 +192,12 @@ String^ Game::OnHitObject(int x, int y)
 	XMMATRIX worldMat = XMMatrixRotationY(m_rotation);
 	XMStoreFloat4x4(&world, worldMat);
 
-	XMFLOAT4X4 teapotWorld;
-	XMStoreFloat4x4(&teapotWorld, XMLoadFloat4x4(&m_teapotTransform) * worldMat);
-
 	float closestT = FLT_MAX;
 	for (Mesh* m : m_meshModels)
 	{
 		XMFLOAT4X4 meshTransform = world;
 
 		auto name = ref new String(m->Name());
-
-		if (String::CompareOrdinal(name, L"Teapot_Node") == 0)
-		{
-			meshTransform = teapotWorld;
-		}
 
 		float t = 0;
 		bool hit = HitTestingHelpers::LineHitTest(*m, &point, &dir, &meshTransform, &t);

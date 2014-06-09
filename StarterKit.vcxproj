@@ -188,11 +188,9 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="Assets\CubeUVImage.png">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-    </None>
     <Image Include="Assets\Logo.png" />
     <Image Include="Assets\SmallLogo.png" />
+    <Image Include="Assets\SoccerBall.png" />
     <Image Include="Assets\StoreLogo.png" />
     <Image Include="Assets\SplashScreen.png" />
   </ItemGroup>
@@ -280,7 +278,6 @@
   </ItemGroup>
   <ItemGroup>
     <MeshContentTask Include="Assets\gamelevel.fbx" />
-    <MeshContentTask Include="Assets\teapot.fbx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\GlowEffect.dgsl">

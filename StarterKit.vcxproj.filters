@@ -82,9 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="StarterKit_TemporaryKey.pfx" />
-    <None Include="Assets\CubeUVImage.png">
-      <Filter>Assets</Filter>
-    </None>
+    <None Include="Assets\GlowEffect.dgsl" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="DirectXPage.xaml" />
@@ -101,13 +99,10 @@
     <MeshContentTask Include="Assets\gamelevel.fbx">
       <Filter>Assets</Filter>
     </MeshContentTask>
-    <MeshContentTask Include="Assets\teapot.fbx">
-      <Filter>Assets</Filter>
-    </MeshContentTask>
   </ItemGroup>
   <ItemGroup>
-    <ShaderGraphContentTask Include="Assets\GlowEffect.dgsl">
+    <Image Include="Assets\SoccerBall.png">
       <Filter>Assets</Filter>
-    </ShaderGraphContentTask>
+    </Image>
   </ItemGroup>
 </Project>
